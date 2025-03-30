@@ -179,7 +179,7 @@ async def stop(update: Update, context):
     chat_id = update.effective_chat.id
     if chat_id in active_chats:
         active_chats.remove(chat_id)
-        await update.message.reply_text("Прощай! Если за тобой нужно присмотреть — всегда здесь.")
+        await update.message.reply_text("Пакеда! Если нужно будет присмотреть — всегда здесь и сейчас.")
     else:
         await update.message.reply_text("Я больше за тобой не слежу — двигайся на ощупь.")
 
