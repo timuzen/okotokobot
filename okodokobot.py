@@ -54,7 +54,7 @@ def generate_next_random_time(from_date=None):
 
     return datetime.combine(random_day.date(), dtime(hour, minute))
 
-# Планировщий - проверяем раз в минуту "время момента"
+# Планировщик - проверяем раз в минуту "время момента"
 async def check_random_quotes(app):
     now = datetime.now()
     for chat_id in list(active_chats):
