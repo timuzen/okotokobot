@@ -14,7 +14,7 @@ scheduler.start()
 
 active_chats = set()
 just_started_chats = set()
-recent_responded = set()  # 💡 <-- ключ к победе
+recent_responded = set()  # анти дабл-мобл баг
 last_message_ids = {}
 last_emoji_message_ids = {}
 user_hint_requests = {}
