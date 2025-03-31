@@ -1,7 +1,11 @@
 services:
   - type: worker
-    name: telegram-bot
+    name: dev-okodokobot
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python okodokobot.py
+    startCommand: python dev_okodokobot.py
+    disk:
+      name: bot-state
+      mountPath: /data
+      sizeGB: 1
