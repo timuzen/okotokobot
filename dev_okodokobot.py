@@ -59,6 +59,15 @@ def load_state():
             "count": data["count"]
         }
 
+# Watchdog
+def ping_betterstack():
+    try:
+        requests.get("https://uptime.betterstack.com/api/v1/heartbeat/zRLyYatoR4AXkijVzvkT55Nd")
+        print("✅ Watchdog ping sent to BetterStack.")
+    except Exception as e:
+        print(f"❌ Watchdog error: {e}")
+
+
 # Получение цитаты
 def get_quote():
     url = "http://api.forismatic.com/api/1.0/"
@@ -224,10 +233,12 @@ print("Состояние загружено.")
 atexit.register(save_state)
 print("Автосохранение при выходе настроено.")
 
+# Schedulers - - - - - - - - - - -
 scheduler.add_job(lambda: asyncio.run_coroutine_threadsafe(check_random_quotes(app), loop), "interval", minutes=1)
-
 scheduler.add_job(save_state, "interval", minutes=10)
+scheduler.add_job(ping_betterstack, "interval", minutes=10)
 
+# Heandlers - - - - - - - - - - - -
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("help", help_command))
 app.add_handler(CommandHandler("stop", stop))
