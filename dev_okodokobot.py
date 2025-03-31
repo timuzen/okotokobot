@@ -2,14 +2,19 @@ from telegram import Update
 from telegram.constants import ChatAction
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from apscheduler.schedulers.background import BackgroundScheduler
+from zoneinfo import ZoneInfo 
 from datetime import datetime, timedelta, time as dtime
 import requests
 import asyncio
 import random
+import json
+import os
+import atexit
 
-TOKEN = "7268895893:AAHcYxiiS34_J2-9PGIJuic5K4yAUGehCQU"
+STATE_FILE = "bot_state.json"
+TOKEN = "7607565198:AAE4PEgwAdDBo2q-gF-FcWV6lXq9pgfehyU"
 
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(timezone=ZoneInfo("Asia/Almaty"))
 scheduler.start()
 
 active_chats = set()
@@ -21,6 +26,38 @@ user_hint_requests = {}
 next_random_push = {}
 
 EMOJIS = ["👁"]
+
+# Сохранение состояния бота 
+def save_state():
+    state = {
+        "active_chats": list(active_chats),
+        "next_random_push": {str(k): v.isoformat() for k, v in next_random_push.items()},
+        "user_hint_requests": {str(k): {
+            "time": v["time"].isoformat(),
+            "count": v["count"]
+        } for k, v in user_hint_requests.items()}
+    }
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f)
+
+# Возобновление состояния бота 
+def load_state():
+    if not os.path.exists(STATE_FILE):
+        return
+
+    with open(STATE_FILE, "r") as f:
+        state = json.load(f)
+
+    active_chats.update(int(cid) for cid in state.get("active_chats", []))
+
+    for cid, time_str in state.get("next_random_push", {}).items():
+        next_random_push[int(cid)] = datetime.fromisoformat(time_str)
+
+    for cid, data in state.get("user_hint_requests", {}).items():
+        user_hint_requests[int(cid)] = {
+            "time": datetime.fromisoformat(data["time"]),
+            "count": data["count"]
+        }
 
 # Получение цитаты
 def get_quote():
@@ -41,13 +78,6 @@ def generate_next_random_time(from_date=None):
 
     days_ahead = random.randint(7, 13)  # минимум через неделю
     random_day = from_date + timedelta(days=days_ahead)
-
-    hour = random.randint(9, 22)
-    minute = random.randint(0, 59)
-
-    return datetime.combine(random_day.date(), dtime(hour, minute))
-
-    random_day = today + timedelta(days=days_ahead)
 
     hour = random.randint(9, 22)
     minute = random.randint(0, 59)
@@ -188,7 +218,15 @@ app = Application.builder().token(TOKEN).build()
 
 loop = asyncio.get_event_loop()
 
+load_state()
+print("Состояние загружено.")
+
+atexit.register(save_state)
+print("Автосохранение при выходе настроено.")
+
 scheduler.add_job(lambda: asyncio.run_coroutine_threadsafe(check_random_quotes(app), loop), "interval", minutes=1)
+
+scheduler.add_job(save_state, "interval", minutes=10)
 
 app.add_handler(CommandHandler("start", start))
 app.add_handler(CommandHandler("help", help_command))
