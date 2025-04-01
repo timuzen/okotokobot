@@ -220,7 +220,7 @@ async def stop(update: Update, context):
         active_chats.remove(chat_id)
         await update.message.reply_text("Пакеда! Если нужно будет присмотреть — всегда здесь и сейчас.")
     else:
-        await update.message.reply_text("Я больше за тобой не слежу — двигайся на ощупь.")
+        await update.message.reply_text("Больше не слежу за тобой — двигайся на ощупь.")
 
 # Запуск приложения
 app = Application.builder().token(TOKEN).build()
