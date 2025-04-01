@@ -12,7 +12,7 @@ import os
 import atexit
 
 
-# - - - - - - - - - - - - OKOTOKOBOT - - - - - - - - - - - - - -
+# - - - - - - - - - - - - - OKOTOKOBOT - - - - - - - - - - - - - - -
 
 STATE_FILE = "bot_state.json"
 TOKEN = "7607565198:AAE4PEgwAdDBo2q-gF-FcWV6lXq9pgfehyU"
