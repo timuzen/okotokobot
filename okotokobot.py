@@ -15,7 +15,7 @@ import atexit
 # - - - - - - - - - - - - - OKOTOKOBOT - - - - - - - - - - - - - - -
 
 STATE_FILE = "bot_state.json"
-TOKEN = "7607565198:AAE4PEgwAdDBo2q-gF-FcWV6lXq9pgfehyU"
+TOKEN = "8052474503:AAH2xbumk2oLPuvqA-R-WbijplvpW3ZPvoU"
 
 scheduler = BackgroundScheduler(timezone=ZoneInfo("Asia/Almaty"))
 scheduler.start()
