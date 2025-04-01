@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.constants import ChatAction
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from apscheduler.schedulers.background import BackgroundScheduler
-from zoneinfo import ZoneInfo 
+from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta, time as dtime
 import requests
 import asyncio
@@ -10,6 +10,8 @@ import random
 import json
 import os
 import atexit
+
+# - - - - - - - - - - - - OKOTOKOBOT - - - - - - - - - - - - - -
 
 STATE_FILE = "bot_state.json"
 TOKEN = "7607565198:AAE4PEgwAdDBo2q-gF-FcWV6lXq9pgfehyU"
@@ -27,7 +29,8 @@ next_random_push = {}
 
 EMOJIS = ["👁"]
 
-# Сохранение состояния бота 
+
+# Сохранение состояния бота
 def save_state():
     state = {
         "active_chats": list(active_chats),
@@ -40,7 +43,8 @@ def save_state():
     with open(STATE_FILE, "w") as f:
         json.dump(state, f)
 
-# Возобновление состояния бота 
+
+# Возобновление состояния бота
 def load_state():
     if not os.path.exists(STATE_FILE):
         return
@@ -58,6 +62,7 @@ def load_state():
             "time": datetime.fromisoformat(data["time"]),
             "count": data["count"]
         }
+
 
 # Watchdog
 def ping_betterstack():
@@ -80,6 +85,7 @@ def get_quote():
     except:
         return "Ошибка соединения с API."
 
+
 # Генерация случайного "времени момента" (один раз в неделю)
 def generate_next_random_time(from_date=None):
     if not from_date:
@@ -92,6 +98,7 @@ def generate_next_random_time(from_date=None):
     minute = random.randint(0, 59)
 
     return datetime.combine(random_day.date(), dtime(hour, minute))
+
 
 # Планировщик - проверяем раз в минуту "время момента"
 async def check_random_quotes(app):
@@ -133,9 +140,11 @@ async def eye_response(update: Update, context):
         return
 
     recent_responded.add(chat_id)
+
     async def clear_flag():
         await asyncio.sleep(2)
         recent_responded.discard(chat_id)
+
     asyncio.create_task(clear_flag())
 
     if chat_id not in active_chats:
@@ -189,7 +198,6 @@ async def eye_response(update: Update, context):
     last_emoji_message_ids[chat_id] = msg.message_id
 
 
-
 # /start
 async def start(update: Update, context):
     chat_id = update.effective_chat.id
@@ -199,6 +207,7 @@ async def start(update: Update, context):
     async def clear_just_started():
         await asyncio.sleep(3)
         just_started_chats.discard(chat_id)
+
     asyncio.create_task(clear_just_started())
 
     if chat_id in active_chats:
@@ -209,9 +218,11 @@ async def start(update: Update, context):
         await asyncio.sleep(2)
         await update.message.reply_text("Я слежу за тобой. Будь на связи — в нужный момент дам знак.")
 
+
 # /help
 async def help_command(update: Update, context):
     await update.message.reply_text("Даже не надейся.")
+
 
 # /stop
 async def stop(update: Update, context):
@@ -221,6 +232,7 @@ async def stop(update: Update, context):
         await update.message.reply_text("Пакеда! Если нужно будет присмотреть — всегда здесь и сейчас.")
     else:
         await update.message.reply_text("Больше не слежу за тобой — двигайся на ощупь.")
+
 
 # Запуск приложения
 app = Application.builder().token(TOKEN).build()
