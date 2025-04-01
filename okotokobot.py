@@ -11,6 +11,7 @@ import json
 import os
 import atexit
 
+
 # - - - - - - - - - - - - - OKOTOKOBOT - - - - - - - - - - - - - - -
 
 STATE_FILE = "bot_state.json"
@@ -30,7 +31,9 @@ next_random_push = {}
 EMOJIS = ["👁"]
 
 
+
 # Сохранение состояния бота
+
 def save_state():
     state = {
         "active_chats": list(active_chats),
@@ -44,7 +47,9 @@ def save_state():
         json.dump(state, f)
 
 
+
 # Возобновление состояния бота
+
 def load_state():
     if not os.path.exists(STATE_FILE):
         return
@@ -62,6 +67,7 @@ def load_state():
             "time": datetime.fromisoformat(data["time"]),
             "count": data["count"]
         }
+
 
 
 # Watchdog
@@ -86,6 +92,8 @@ def get_quote():
         return "Ошибка соединения с API."
 
 
+
+
 # Генерация случайного "времени момента" (один раз в неделю)
 def generate_next_random_time(from_date=None):
     if not from_date:
@@ -98,6 +106,8 @@ def generate_next_random_time(from_date=None):
     minute = random.randint(0, 59)
 
     return datetime.combine(random_day.date(), dtime(hour, minute))
+
+
 
 
 # Планировщик - проверяем раз в минуту "время момента"
@@ -141,9 +151,11 @@ async def eye_response(update: Update, context):
 
     recent_responded.add(chat_id)
 
+
     async def clear_flag():
         await asyncio.sleep(2)
         recent_responded.discard(chat_id)
+
 
     asyncio.create_task(clear_flag())
 
@@ -208,6 +220,7 @@ async def start(update: Update, context):
         await asyncio.sleep(3)
         just_started_chats.discard(chat_id)
 
+        
     asyncio.create_task(clear_just_started())
 
     if chat_id in active_chats:
@@ -233,6 +246,7 @@ async def stop(update: Update, context):
     else:
         await update.message.reply_text("Больше не слежу за тобой — двигайся на ощупь.")
 
+        
 
 # Запуск приложения
 app = Application.builder().token(TOKEN).build()
