@@ -4,6 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from apscheduler.schedulers.background import BackgroundScheduler
 from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta, time as dtime
+from dotenv import load_dotenv
 import requests
 import asyncio
 import random
@@ -14,8 +15,11 @@ import atexit
 
 # - - - - - - - - - - - - - OKOTOKOBOT - - - - - - - - - - - - - - -
 
+
+load_dotenv()
+
+TOKEN = os.getenv("TOKEN")
 STATE_FILE = "bot_state.json"
-TOKEN = "8052474503:AAEA-fYFmcuSlToYY9RSFYSkHJpO_MXjvRs"
 
 scheduler = BackgroundScheduler(timezone=ZoneInfo("Asia/Almaty"))
 scheduler.start()
