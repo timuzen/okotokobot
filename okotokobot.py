@@ -21,6 +21,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 STATE_FILE = "bot_state.json"
 
+
 scheduler = BackgroundScheduler(timezone=ZoneInfo("Asia/Almaty"))
 scheduler.start()
 
