@@ -267,7 +267,6 @@ print("Автосохранение при выходе настроено.")
 # Schedulers - - - - - - - - - - -
 scheduler.add_job(lambda: asyncio.run_coroutine_threadsafe(check_random_quotes(app), loop), "interval", minutes=1)
 scheduler.add_job(save_state, "interval", minutes=10)
-scheduler.add_job(ping_betterstack, "interval", minutes=10)
 
 # Heandlers - - - - - - - - - - - -
 app.add_handler(CommandHandler("start", start))
