@@ -5,6 +5,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta, time as dtime
 from dotenv import load_dotenv
+from flask import Flask
+from threading import Thread
 import requests
 import asyncio
 import random
@@ -21,6 +23,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 STATE_FILE = "bot_state.json"
 
+flask_app = Flask(__name__)
 scheduler = BackgroundScheduler(timezone=ZoneInfo("Asia/Almaty"))
 scheduler.start()
 
@@ -50,7 +53,6 @@ def save_state():
         json.dump(state, f)
 
 
-
 # Возобновление состояния бота
 
 def load_state():
@@ -72,14 +74,14 @@ def load_state():
         }
 
 
+# Monitoring
+@flask_app.route("/ping")
+def ping():
+    return "OK", 200
 
-# Watchdog
-def ping_betterstack():
-    try:
-        requests.get("https://uptime.betterstack.com/api/v1/heartbeat/zRLyYatoR4AXkijVzvkT55Nd")
-        print("✅ Watchdog ping sent to BetterStack.")
-    except Exception as e:
-        print(f"❌ Watchdog error: {e}")
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    flask_app.run(host="0.0.0.0", port=port)
 
 
 # Получение цитаты
@@ -273,5 +275,11 @@ app.add_handler(CommandHandler("help", help_command))
 app.add_handler(CommandHandler("stop", stop))
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), eye_response, block=False))
 
-print("Бот запущен...")
-app.run_polling()
+if __name__ == "__main__":
+    flask_thread = Thread(target=run_flask)
+    flask_thread.start()
+
+    print("Бот запущен...")
+    app.run_polling()
+
+
