@@ -39,7 +39,6 @@ EMOJIS = ["👁"]
 
 
 # Сохранение состояния бота
-
 def save_state():
     state = {
         "active_chats": list(active_chats),
@@ -54,7 +53,6 @@ def save_state():
 
 
 # Возобновление состояния бота
-
 def load_state():
     if not os.path.exists(STATE_FILE):
         return
@@ -74,9 +72,13 @@ def load_state():
         }
 
 
-# Monitoring
+# Monitoring @_@
 @flask_app.route("/ping")
 def ping():
+    real_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    user_agent = request.headers.get("User-Agent", "Unknown")
+
+    print(f"[PING] IP: {real_ip} | UA: {user_agent}")
     return "OK", 200
 
 def run_flask():
