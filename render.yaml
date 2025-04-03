@@ -1,11 +1,7 @@
 services:
   - type: web
-    name: dev-okodokobot
+    name: okotokobot
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python dev_okodokobot.py
-    disk:
-      name: bot-state
-      mountPath: /data
-      sizeGB: 1
+    startCommand: python okotokobot.py
