@@ -74,7 +74,7 @@ def load_state():
         }
 
 
-# Betterstack monitoring
+# Monitoring
 @flask_app.route("/ping")
 def ping():
     return "OK", 200
