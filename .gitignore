@@ -9,7 +9,11 @@ dist/
 .idea/
 .env
 bot_state.json
-
+temp_config_dev.json
+temp_config_prod.json
+_temp.py
+test_DB_connection.py
+import_config.py
 
 
 
